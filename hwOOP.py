@@ -33,13 +33,13 @@ class Student:
         if not isinstance(other, Student):
             print('Студент не в списке')
             return
-        return self.a_grade() > other.a_grade()
-            # if self.a_grade() < other.a_grade():
-            #     print(f'Успеваемость студента {other.name} лучше, чем у {self.name} ')
-            # elif self.a_grade() == other.a_grade():
-            #     print(f'Успеваемость студента {other.name} идентична {self.name} ')
-            # else:
-            #     print(f'Успеваемость студента {self.name} лучше, чем у {other.name} ')
+        if self.a_grade() < other.a_grade():
+            print(f'Успеваемость студента {other.name} лучше, чем у {self.name} ')
+        elif self.a_grade() == other.a_grade():
+            print(f'Успеваемость студента {other.name} идентична {self.name} ')
+        else:
+            print(f'Успеваемость студента {self.name} лучше, чем у {other.name} ')
+        return self.a_grade() < other.a_grade()
 
     def __str__(self):
         res = f'Name : {self.name} \nSurname : {self.surname} \nAverage grade : {self.a_grade()} \nCourses in progress : {self.courses_in_progress} \nfinished courses : {self.finished_courses}'
@@ -50,10 +50,9 @@ class Mentor:
         self.name = name
         self.surname = surname
         self.courses_attached = []
-
+        self.grades = {}
 
 class Lecturer(Mentor):
-    grades = {}
 
     def a_grade(self):
         sum = 0
@@ -99,38 +98,59 @@ class Reviewer(Mentor):
         res = f'Name : {self.name} \nSurname : {self.surname}'
         return res
 
-
-best_student = Student('Ruoy', 'Eman', 'your_gender')
+best_student = Student('Elizaveta', 'Kazarinskova', 'female')
 best_student.courses_in_progress += ['Python']
 
-not_best_student = Student('York', 'Stark', 'your_gender')
+not_best_student = Student('York', 'Stark', 'male')
 not_best_student.courses_in_progress += ['Python']
 
-cool_mentor = Reviewer('Some', 'Buddy')
-cool_mentor.courses_attached += ['Python']
+first_reviewer = Reviewer('Sergei', 'Gromov')
+first_reviewer.courses_attached += ['Python']
 
-cool_mentor.rate_hw(best_student, 'Python', 10)
-cool_mentor.rate_hw(best_student, 'Python', 10)
-cool_mentor.rate_hw(best_student, 'Python', 10)
+second_reviewer = Reviewer('Pavel', 'Lebed')
+second_reviewer.courses_attached += ['Python']
 
-cool_mentor.rate_hw(not_best_student, 'Python', 5)
-cool_mentor.rate_hw(not_best_student, 'Python', 5)
-cool_mentor.rate_hw(not_best_student, 'Python', 5)
+cool_lecturer = Lecturer('Viktor', 'Dimov')
+cool_lecturer.courses_attached += ['Python']
 
-cool_lecter = Lecturer('Viktor', 'Dimov')
-cool_lecter.courses_attached += ['Python']
+not_cool_lecturer = Lecturer('Petr', 'Ivanov')
+not_cool_lecturer.courses_attached += ['Python']
 
-not_cool_lecter = Lecturer('Petr', 'Ivanov')
-not_cool_lecter.courses_attached += ['Python']
+best_student.rate_lecturer(cool_lecturer, 'Python', 10)
+best_student.rate_lecturer(not_cool_lecturer, 'Python', 5)
 
-best_student.rate_lecturer(cool_lecter, 'Python', 1)
-best_student.rate_lecturer(cool_lecter, 'Python', 1)
-best_student.rate_lecturer(cool_lecter, 'Python', 1)
+not_best_student.rate_lecturer(cool_lecturer, 'Python', 10)
+not_best_student.rate_lecturer(not_cool_lecturer, 'Python', 5)
 
-best_student.rate_lecturer(not_cool_lecter, 'Python', 5)
-best_student.rate_lecturer(not_cool_lecter, 'Python', 5)
-best_student.rate_lecturer(not_cool_lecter, 'Python', 5)
+first_reviewer.rate_hw(best_student, 'Python', 10)
+first_reviewer.rate_hw(not_best_student, 'Python', 5)
 
-best_reviever = Reviewer('Ivan', 'Gromov')
+second_reviewer.rate_hw(best_student, 'Python', 10)
+second_reviewer.rate_hw(not_best_student, 'Python', 5)
 
-print(best_student > not_best_student)
+list_student = [best_student, not_best_student]
+list_lecturer = [cool_lecturer, not_cool_lecturer]
+
+def average_grade_students(list_student, course):
+    sum = 0
+    i = 0
+    for student in list_student:
+        for grades in student.grades[course]:
+            if course in student.grades:
+                sum += grades
+                i += 1
+    res = sum / i
+    return print(f'Средняя оценка студентов на курсе {course} равна {res}')
+
+def average_grade_lecturer(list_lecturer, course):
+    sum = 0
+    i = 0
+    for lecturer in list_lecturer:
+        for grades in lecturer.grades[course]:
+            if course in lecturer.grades:
+                sum += grades
+                i += 1
+    res = sum / i
+    return print(f'Средняя оценка лекторов на курсе {course} равна {res}')
+
+print(best_student)
